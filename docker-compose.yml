@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  whisper-live:
+    hostname: whisper-live
+    container_name: whisper-live
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.gpu
+      #dockerfile: ./docker/Dockerfile.cpu
+      args:
+      #  MODEL: tiny     # 1GB (32x)
+      #  MODEL: base     # 1GB (16x)
+      #  MODEL: small    # 2GB (6x)
+        MODEL: medium    # 5GB (2x)
+      #  MODEL: large    # 10GB (1x)
+      #  MODEL: large-v2 # 10GB (1x)
+    runtime: nvidia
+    environment:
+      HOSTNAME: petals
+      NVIDIA_VISIBLE_DEVICES: GPU-efdd66ff-d3a4-57f0-256f-57c522d2f04c
+      # NVIDIA_VISIBLE_DEVICES: GPU-7971baff-9583-eaa6-2292-393f930a28f9
+      # NVIDIA_VISIBLE_DEVICES: GPU-b52387a2-c625-de87-8d34-e6f64e684bab
+      # NVIDIA_VISIBLE_DEVICES: GPU-21cbb90f-cb07-5f36-1784-ee66e83aec59
+      # NVIDIA_VISIBLE_DEVICES: GPU-1ec86db5-6a4c-6e20-7586-f6489879d4cb
+      #HUGGING_FACE_HUB_TOKEN: ${HUGGING_FACE_HUB_TOKEN}
+      HF_HUB_ENABLE_HF_TRANSFER: "True"
+    devices:
+    - /dev/dri:/dev/dri
+    restart: unless-stopped
+    ipc: host
+    network_mode: host
+    # ports:
+    #   - "9090:9090"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: [ "GPU-efdd66ff-d3a4-57f0-256f-57c522d2f04c" ]
+              #device_ids: [ "GPU-7971baff-9583-eaa6-2292-393f930a28f9" ]
+              #device_ids: [ "GPU-b52387a2-c625-de87-8d34-e6f64e684bab" ]
+              #device_ids: [ "GPU-21cbb90f-cb07-5f36-1784-ee66e83aec59" ]
+              #device_ids: [ "GPU-1ec86db5-6a4c-6e20-7586-f6489879d4cb" ]
+              #device_ids: [ "2" ]
+              #count: 1
+     

@@ -2,6 +2,10 @@ FROM nvidia/cuda:11.2.2-cudnn8-runtime-ubuntu20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Default to the small model, but let it be specified at image build time.
+ARG MODEL=small
+ENV MODEL=${MODEL}
+
 # Remove any third-party apt sources to avoid issues with expiring keys.
 RUN rm -f /etc/apt/sources.list.d/*.list
 
@@ -41,6 +45,7 @@ RUN bash setup.sh
 RUN pip install -r server.txt
 
 COPY whisper_live /app/whisper_live
+RUN perl -pi -e "s/small/${MODEL}/g" /app/whisper_live/server.py
 
 COPY run_server.py /app
 
